@@ -16,10 +16,14 @@ export default function Home() {
 
   function sortCars(order) {
     const sortedCars = [...cars].sort((a, b) => {
-      if (order === "ascending") {
+      if (order === "ascending-alphabet") {
         return a.brand.localeCompare(b.brand);
-      } else {
+      } else if (order === "descending-alphabet") {
         return b.brand.localeCompare(a.brand);
+      } else if (order === "ascending-horsepower") {
+        return a.horsePower - b.horsePower;
+      } else if (order === "descending-horsepower") {
+        return b.horsePower - a.horsePower;
       }
     });
 
@@ -36,8 +40,10 @@ export default function Home() {
         <h1>My Frontend - The very beginning</h1>
         <button onClick={buttonHandler}>load cars</button>
         <select onChange={onChange} className={"margin"}>
-          <option value="ascending">Alphabetic ascending</option>
-          <option value="descending">Alphabetic descending</option>
+            <option value="ascending-alphabet">Alphabetic ascending</option>
+            <option value="descending-alphabet">Alphabetic descending</option>
+            <option value="ascending-horsepower">Horsepower ascending</option>
+            <option value="descending-horsepower">Horsepower descending</option>
         </select>
         <br/>
         <ul>
