@@ -1,4 +1,4 @@
-// File: C:\Schule\BBW\Module\Semester_5\M323 Funktional\Cool-Cars\m450-cool-cars-fe\src\app\layout.js
+// File: C:\Users\sven\WebstormProjects\CoolCars\m450-cool-cars-fe\src\app\layout.js
 import * as entry from '../../../src/app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
