@@ -3,9 +3,13 @@ package ch.bbw.coolcarsbackend;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -28,6 +32,16 @@ public class CarController implements ApplicationRunner {
         return (List<Car>) carRepository.findAll();
     }
 
+    // Neue Funktion: Paginierte Autos abrufen
+    @GetMapping("cars/paged")
+    public Page<Car> getPagedCars(
+            @RequestParam(defaultValue = "0") int page,  // Standard: Seite 0
+            @RequestParam(defaultValue = "10") int size // Standard: 10 Elemente pro Seite
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return carRepository.findAll(pageable);
+    }
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         System.out.println("App Runner...");
@@ -36,7 +50,6 @@ public class CarController implements ApplicationRunner {
         carRepository
                 .findAll()
                 .forEach(System.out::println);
-
     }
 
     @GetMapping("cars/{id}")
