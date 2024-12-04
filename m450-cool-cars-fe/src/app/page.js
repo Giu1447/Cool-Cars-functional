@@ -99,7 +99,7 @@ export default function Home() {
         clearTimeout(debounceTimeout);
         debounceTimeout = setTimeout(() => {
             setSearchTerm(value);
-        }, 300);
+        }, 0);
     }
 
     return (
