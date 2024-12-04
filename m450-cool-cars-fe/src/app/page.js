@@ -10,6 +10,8 @@ export default function Home() {
     const [sortCategory, setSortCategory] = useState("alphabet");
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredCars, setFilteredCars] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
 
     useEffect(() => {
         if (searchTerm === "") {
@@ -24,6 +26,10 @@ export default function Home() {
             );
         }
     }, [searchTerm, cars]);
+
+    const indexOfLastCar = currentPage * itemsPerPage;
+    const indexOfFirstCar = indexOfLastCar - itemsPerPage;
+    const currentCars = Array.isArray(filteredCars) ? filteredCars.slice(indexOfFirstCar, indexOfLastCar) : [];
 
     function buttonHandler() {
         fetch("http://localhost:8080/cars")
@@ -69,7 +75,7 @@ export default function Home() {
 
     function sortCars() {
         const order = isAscending ? "ascending" : "descending";
-        const sortedCars = [...filteredCars].sort((a, b) => {
+        const sortedCars = [...cars].sort((a, b) => {
             if (sortCategory === "alphabet") {
                 return order === "ascending"
                     ? a.brand.localeCompare(b.brand)
@@ -81,7 +87,7 @@ export default function Home() {
             }
         });
 
-        setFilteredCars(sortedCars);
+        setCars(sortedCars);
     }
 
     function toggleSortOrder() {
@@ -94,13 +100,30 @@ export default function Home() {
         sortCars();
     }
 
+    function onChange(event) {
+        const selectedValue = event.target.value;
+        sortCars(selectedValue);
+    }
+
     let debounceTimeout;
     function handleSearch(value) {
         clearTimeout(debounceTimeout);
         debounceTimeout = setTimeout(() => {
             setSearchTerm(value);
-        }, 0);
+        }, 300);
     }
+
+    const nextPage = () => {
+        if (currentPage < Math.ceil(filteredCars.length / itemsPerPage)) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const prevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
 
     return (
         <div className="App">
@@ -116,9 +139,9 @@ export default function Home() {
                 onChange={(e) => handleSearch(e.target.value)}
                 className="search-bar"
             />
-            <br />
+            <br/>
             <ul>
-                {filteredCars.map((car) => (
+                {currentCars.map((car) => (
                     <li key={car.id}>
                         {car.brand + " " + car.model + " (" + car.horsePower + ")"}
                     </li>
@@ -129,9 +152,22 @@ export default function Home() {
                 {isAscending ? arrowdown : arrowup}
             </button>
 
-            <br />
+            <br/>
 
             <Link href="/carform">add a new car</Link>
+
+            <div>
+                <button onClick={prevPage} disabled={currentPage === 1}>
+                    Previous
+                </button>
+                <span>Page {currentPage}</span>
+                <button
+                    onClick={nextPage}
+                    disabled={currentPage >= Math.ceil(filteredCars.length / itemsPerPage)}
+                >
+                    Next
+                </button>
+            </div>
         </div>
     );
 }
