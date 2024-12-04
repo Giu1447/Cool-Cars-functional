@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import "./globals.css";
 
@@ -8,6 +8,22 @@ export default function Home() {
     const [cars, setCars] = useState([]);
     const [isAscending, setIsAscending] = useState(true);
     const [sortCategory, setSortCategory] = useState("alphabet");
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredCars, setFilteredCars] = useState([]);
+
+    useEffect(() => {
+        if (searchTerm === "") {
+            setFilteredCars(cars);
+        } else {
+            setFilteredCars(
+                cars.filter(
+                    (car) =>
+                        car.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        car.model.toLowerCase().includes(searchTerm.toLowerCase())
+                )
+            );
+        }
+    }, [searchTerm, cars]);
 
     function buttonHandler() {
         fetch("http://localhost:8080/cars")
@@ -53,7 +69,7 @@ export default function Home() {
 
     function sortCars() {
         const order = isAscending ? "ascending" : "descending";
-        const sortedCars = [...cars].sort((a, b) => {
+        const sortedCars = [...filteredCars].sort((a, b) => {
             if (sortCategory === "alphabet") {
                 return order === "ascending"
                     ? a.brand.localeCompare(b.brand)
@@ -65,7 +81,7 @@ export default function Home() {
             }
         });
 
-        setCars(sortedCars);
+        setFilteredCars(sortedCars);
     }
 
     function toggleSortOrder() {
@@ -78,6 +94,14 @@ export default function Home() {
         sortCars();
     }
 
+    let debounceTimeout;
+    function handleSearch(value) {
+        clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => {
+            setSearchTerm(value);
+        }, 300);
+    }
+
     return (
         <div className="App">
             <h1>My Frontend - The very beginning</h1>
@@ -86,9 +110,15 @@ export default function Home() {
                 <option value="alphabet">Alphabetic</option>
                 <option value="horsepower">Horsepower</option>
             </select>
+            <input
+                type="text"
+                placeholder="Search cars..."
+                onChange={(e) => handleSearch(e.target.value)}
+                className="search-bar"
+            />
             <br />
             <ul>
-                {cars.map((car) => (
+                {filteredCars.map((car) => (
                     <li key={car.id}>
                         {car.brand + " " + car.model + " (" + car.horsePower + ")"}
                     </li>
@@ -96,7 +126,7 @@ export default function Home() {
             </ul>
 
             <button onClick={toggleSortOrder} className="margin">
-                {isAscending ? arrowup : arrowdown}
+                {isAscending ? arrowdown : arrowup}
             </button>
 
             <br />
