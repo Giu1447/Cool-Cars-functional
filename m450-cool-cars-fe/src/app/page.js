@@ -27,9 +27,10 @@ export default function Home() {
         }
     }, [searchTerm, cars]);
 
+    // Berechne den Indexbereich basierend auf der aktuellen Seite
     const indexOfLastCar = currentPage * itemsPerPage;
     const indexOfFirstCar = indexOfLastCar - itemsPerPage;
-    const currentCars = Array.isArray(filteredCars) ? filteredCars.slice(indexOfFirstCar, indexOfLastCar) : [];
+    const currentCars = filteredCars.slice(indexOfFirstCar, indexOfLastCar);
 
     function buttonHandler() {
         fetch("http://localhost:8080/cars")
