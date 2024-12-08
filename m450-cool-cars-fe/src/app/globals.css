@@ -40,6 +40,7 @@ button {
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
   margin: 5px;
+  height: 45px;
 }
 
 button:hover {
@@ -126,4 +127,11 @@ a {
 
 a:hover {
   color: #7f5af0;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }

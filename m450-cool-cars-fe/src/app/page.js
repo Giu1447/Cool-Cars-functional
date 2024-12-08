@@ -45,8 +45,8 @@ export default function Home() {
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            width="36"
-            height="36"
+            width="25"
+            height="25"
         >
             <path
                 strokeLinecap="round"
@@ -63,8 +63,8 @@ export default function Home() {
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            width="36"
-            height="36"
+            width="25"
+            height="25"
         >
             <path
                 strokeLinecap="round"
@@ -111,7 +111,7 @@ export default function Home() {
         clearTimeout(debounceTimeout);
         debounceTimeout = setTimeout(() => {
             setSearchTerm(value);
-        }, 300);
+        }, 0);
     }
 
     const nextPage = () => {
@@ -129,11 +129,18 @@ export default function Home() {
     return (
         <div className="App">
             <h1>My Frontend - The very beginning</h1>
-            <button onClick={buttonHandler}>load cars</button>
-            <select onChange={handleCategoryChange} className="margin">
-                <option value="alphabet">Alphabetic</option>
-                <option value="horsepower">Horsepower</option>
-            </select>
+            <div className="container">
+                <button onClick={buttonHandler}>load cars</button>
+                <select onChange={handleCategoryChange} className="margin">
+                    <option value="alphabet">Alphabetic</option>
+                    <option value="horsepower">Horsepower</option>
+                </select>
+                <button onClick={toggleSortOrder} className="margin">
+                    {isAscending ? arrowdown : arrowup}
+                </button>
+            </div>
+
+
             <input
                 type="text"
                 placeholder="Search cars..."
@@ -149,9 +156,6 @@ export default function Home() {
                 ))}
             </ul>
 
-            <button onClick={toggleSortOrder} className="margin">
-                {isAscending ? arrowdown : arrowup}
-            </button>
 
             <br/>
 
