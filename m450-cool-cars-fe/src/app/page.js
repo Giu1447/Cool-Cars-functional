@@ -4,7 +4,6 @@ import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import "./globals.css";
 
-// Reine Funktionen für Filter- und Sortierlogik
 function filterCars(cars, searchTerm) {
     return cars.filter(
         (car) =>
@@ -33,20 +32,17 @@ export default function Home() {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
-    // Fetch Cars
     async function fetchCars() {
         const response = await fetch("http://localhost:8080/cars");
         const data = await response.json();
         setCars(data);
     }
 
-    // Processed Cars: Filtered and Sorted
     const processedCars = useMemo(() => {
         let result = filterCars(cars, searchTerm);
         return sortCars(result, sortCategory, isAscending);
     }, [cars, searchTerm, sortCategory, isAscending]);
 
-    // Paginated Cars
     const currentCars = useMemo(() => {
         const indexOfLastCar = currentPage * itemsPerPage;
         const indexOfFirstCar = indexOfLastCar - itemsPerPage;
