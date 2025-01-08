@@ -6,11 +6,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,6 +26,11 @@ public class CarController implements ApplicationRunner {
     public List<Car> getCars() {
         System.out.println(carRepository.findAll());
         return (List<Car>) carRepository.findAll();
+    }
+
+    @PostMapping("cars")
+    public Car postCar(@RequestBody Car car) {
+        return carRepository.save(car);
     }
 
     // Neue Funktion: Paginierte Autos abrufen
