@@ -107,7 +107,7 @@ Ich würde mein Kompetenz ebenfalls als **Fortgeschritten** einschätzen.
 ---
 
 - **Higher-Order Functions**:  
-    Sven hat Higher-Order Functions häufig genutzt, um die Verarbeitung der Daten übersichtlich und einfach umzusetzen. Vor allem bei der Paginierung hat er diese Funktionen verwendet.
+    Ich habe Higher-Order Functions häufig genutzt, um die Verarbeitung der Daten übersichtlich und einfach umzusetzen. Vor allem bei der Paginierung habe ich diese Funktionen verwendet.
     **Beispiel**:
     
     ```javascript
@@ -183,9 +183,9 @@ const currentCars = useMemo(() => {
         ```
         
 
-### **Was ich gelernt habe**
+### **Was wir gelernt habe**
 
-Das Projekt hat mir gezeigt, wie wichtig funktionale Programmierkonzepte für sauberen und wartbaren Code sind. Besonders die Verwendung von pure functions und immutable data structures hat mich davon überzeugt, diesen Ansatz in zukünftigen Projekten verstärkt einzusetzen.
+Durch das Projekt haben wir gelernt, wie funktionale Programmierung gezielt eingesetzt werden kann, um die Lesbarkeit des Codes in passenden Situationen zu verbessern.
 
 ---
 
@@ -193,10 +193,7 @@ Das Projekt hat mir gezeigt, wie wichtig funktionale Programmierkonzepte für sa
 
 ### **Selbstbewertung**
 
-Ich würde mir die Note **5.5** geben.
+Giulian Mazzeo: **5.5**
+Sven Lübcke: **5.5**
 
-- Der Code ist klar strukturiert, performant und nutzt moderne Webtechnologien.
-- Dennoch gibt es Verbesserungspotenzial, z. B. durch den Einsatz von Currying oder der weiteren Optimierung der Paginierung.
-
-**Begründung**:  
-Das Projekt hat meine Fähigkeiten in der funktionalen Programmierung gestärkt, und ich konnte ein vollständiges System von der Datenbereitstellung bis zur Darstellung implementieren.
+Wir haben nicht nur alle Anforderungen erfüllt, sondern zusätzlich auch die Funktion zur Hinzufügung neuer Autos erfolgreich implementiert.
