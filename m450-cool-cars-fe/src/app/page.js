@@ -1,43 +1,69 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import "./globals.css";
 
+// Reine Funktionen für Filter- und Sortierlogik
+function filterCars(cars, searchTerm) {
+    return cars.filter(
+        (car) =>
+            car.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            car.model.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+}
+
+function sortCars(cars, sortCategory, isAscending) {
+    const order = isAscending ? 1 : -1;
+    return [...cars].sort((a, b) => {
+        if (sortCategory === "alphabet") {
+            return order * a.brand.localeCompare(b.brand);
+        } else if (sortCategory === "horsepower") {
+            return order * (a.horsePower - b.horsePower);
+        }
+        return 0;
+    });
+}
 
 export default function Home() {
     const [cars, setCars] = useState([]);
     const [isAscending, setIsAscending] = useState(true);
     const [sortCategory, setSortCategory] = useState("alphabet");
     const [searchTerm, setSearchTerm] = useState("");
-    const [filteredCars, setFilteredCars] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
-    useEffect(() => {
-        if (searchTerm === "") {
-            setFilteredCars(cars);
-        } else {
-            setFilteredCars(
-                cars.filter(
-                    (car) =>
-                        car.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                        car.model.toLowerCase().includes(searchTerm.toLowerCase())
-                )
-            );
-        }
-    }, [searchTerm, cars]);
-
-    // Berechne den Indexbereich basierend auf der aktuellen Seite
-    const indexOfLastCar = currentPage * itemsPerPage;
-    const indexOfFirstCar = indexOfLastCar - itemsPerPage;
-    const currentCars = filteredCars.slice(indexOfFirstCar, indexOfLastCar);
-
-    function buttonHandler() {
-        fetch("http://localhost:8080/cars")
-            .then((response) => response.json())
-            .then((data) => setCars(data));
+    // Fetch Cars
+    async function fetchCars() {
+        const response = await fetch("http://localhost:8080/cars");
+        const data = await response.json();
+        setCars(data);
     }
+
+    // Processed Cars: Filtered and Sorted
+    const processedCars = useMemo(() => {
+        let result = filterCars(cars, searchTerm);
+        return sortCars(result, sortCategory, isAscending);
+    }, [cars, searchTerm, sortCategory, isAscending]);
+
+    // Paginated Cars
+    const currentCars = useMemo(() => {
+        const indexOfLastCar = currentPage * itemsPerPage;
+        const indexOfFirstCar = indexOfLastCar - itemsPerPage;
+        return processedCars.slice(indexOfFirstCar, indexOfLastCar);
+    }, [processedCars, currentPage, itemsPerPage]);
+
+    const nextPage = () => {
+        if (currentPage < Math.ceil(processedCars.length / itemsPerPage)) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const prevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
 
     const arrowup = (
         <svg
@@ -75,80 +101,30 @@ export default function Home() {
         </svg>
     );
 
-    function sortCars() {
-        const order = isAscending ? "ascending" : "descending";
-        const sortedCars = [...cars].sort((a, b) => {
-            if (sortCategory === "alphabet") {
-                return order === "ascending"
-                    ? a.brand.localeCompare(b.brand)
-                    : b.brand.localeCompare(a.brand);
-            } else if (sortCategory === "horsepower") {
-                return order === "ascending"
-                    ? a.horsePower - b.horsePower
-                    : b.horsePower - a.horsePower;
-            }
-        });
-
-        setCars(sortedCars);
-    }
-
-    function toggleSortOrder() {
-        setIsAscending(!isAscending);
-        sortCars();
-    }
-
-    function handleCategoryChange(event) {
-        setSortCategory(event.target.value);
-        sortCars();
-    }
-
-    function onChange(event) {
-        const selectedValue = event.target.value;
-        sortCars(selectedValue);
-    }
-
-    let debounceTimeout;
-    function handleSearch(value) {
-        clearTimeout(debounceTimeout);
-        debounceTimeout = setTimeout(() => {
-            setSearchTerm(value);
-        }, 0);
-    }
-
-    const nextPage = () => {
-        if (currentPage < Math.ceil(filteredCars.length / itemsPerPage)) {
-            setCurrentPage(currentPage + 1);
-        }
-    };
-
-    const prevPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
-    };
-
     return (
         <div className="App">
             <h1>My Frontend - The very beginning</h1>
             <div className="container">
-                <button onClick={buttonHandler}>load cars</button>
-                <select onChange={handleCategoryChange} className="margin">
+                <button onClick={fetchCars}>Load Cars</button>
+                <select
+                    onChange={(e) => setSortCategory(e.target.value)}
+                    className="margin"
+                >
                     <option value="alphabet">Alphabetic</option>
                     <option value="horsepower">Horsepower</option>
                 </select>
-                <button onClick={toggleSortOrder} className="margin">
+                <button onClick={() => setIsAscending(!isAscending)} className="margin">
                     {isAscending ? arrowdown : arrowup}
                 </button>
             </div>
 
-
             <input
                 type="text"
                 placeholder="Search cars..."
-                onChange={(e) => handleSearch(e.target.value)}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="search-bar"
             />
-            <br/>
+            <br />
             <ul>
                 {currentCars.map((car) => (
                     <li key={car.id}>
@@ -157,10 +133,9 @@ export default function Home() {
                 ))}
             </ul>
 
+            <br />
 
-            <br/>
-
-            <Link href="/carform">add a new car</Link>
+            <Link href="/carform">Add a new car</Link>
 
             <div>
                 <button onClick={prevPage} disabled={currentPage === 1}>
@@ -169,7 +144,7 @@ export default function Home() {
                 <span className={"margin"}>Page {currentPage}</span>
                 <button
                     onClick={nextPage}
-                    disabled={currentPage >= Math.ceil(filteredCars.length / itemsPerPage)}
+                    disabled={currentPage >= Math.ceil(processedCars.length / itemsPerPage)}
                 >
                     Next
                 </button>
