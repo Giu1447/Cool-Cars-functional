@@ -166,7 +166,7 @@ export default function Home() {
                 <button onClick={prevPage} disabled={currentPage === 1}>
                     Previous
                 </button>
-                <span>Page {currentPage}</span>
+                <span className={"margin"}>Page {currentPage}</span>
                 <button
                     onClick={nextPage}
                     disabled={currentPage >= Math.ceil(filteredCars.length / itemsPerPage)}
