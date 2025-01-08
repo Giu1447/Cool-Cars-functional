@@ -193,7 +193,7 @@ Durch das Projekt haben wir gelernt, wie funktionale Programmierung gezielt eing
 
 ### **Selbstbewertung**
 
-Giulian Mazzeo: **5.5**
-Sven Lübcke: **5.5**
+- Giulian Mazzeo: **5.5**
+- Sven Lübcke: **5.5**
 
 Wir haben nicht nur alle Anforderungen erfüllt, sondern zusätzlich auch die Funktion zur Hinzufügung neuer Autos erfolgreich implementiert.
